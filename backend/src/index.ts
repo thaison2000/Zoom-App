@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { Request } from 'express'
 const app = express();
 
 import { connect } from 'mongoose';
@@ -10,9 +10,13 @@ import * as path from 'path'
 import authRoute from './routes/user/auth';
 import bodyParser from 'body-parser';
 import userRoute from './routes/user/user';
+import multer from 'multer';
+import groupRoute from './routes/group/group';
+import memberRoute from './routes/group/member';
 
 dotenv.config();
 
+//connect DB 
 connect(
   `${process.env.MONGO_URL}`
 ).then((db) => {
@@ -23,7 +27,6 @@ connect(
     console.log("Error Connecting to the Database");
   });;
 
-app.use("/images", express.static(path.join(__dirname, "public/images")));
 //middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -31,11 +34,14 @@ app.use(express.json())
 app.use(helmet());
 app.use(morgan("common"));
 app.use(cors())
+app.use("/images", express.static(path.join(__dirname, "public/images")));
 
 app.use('/api/auth', authRoute)
 app.use('/api/user', userRoute)
+app.use('/api/group', groupRoute)
+app.use('/api/group/member', memberRoute)
 
-
-app.listen(3030, () => {
+app.listen(`${process.env.PORT}`, () => {
   console.log("Server is running!");
 });
+

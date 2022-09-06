@@ -19,6 +19,7 @@ export interface UserRegisterInterface {
 
 export interface GroupInterface {
     groupId: string,
+    groupName: string,
     masterId: string,
     member: Array<string>,
     avatar: string

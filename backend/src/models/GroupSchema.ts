@@ -8,6 +8,12 @@ const GroupSchema = new Schema<GroupInterface>(
       require: true,
       unique: true,
     },
+    groupName: {
+        type: String,
+        require: true,
+        unique: true,
+        default: ''
+      },
     member: {
       type: [String],
     },
