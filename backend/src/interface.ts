@@ -16,3 +16,10 @@ export interface UserRegisterInterface {
     username: string,
     password: string,
 }
+
+export interface GroupInterface {
+    groupId: string,
+    masterId: string,
+    member: Array<string>,
+    avatar: string
+}

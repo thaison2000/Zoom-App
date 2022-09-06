@@ -3,7 +3,7 @@ import MessageBox from '../MessageBox'
 
 const ChatBox = () => {
     return (
-        <div className='w-8/10 h-[84vh] m-2 bg-white relative'>
+        <div className='w-8/10 h-[84vh] m-2 bg-white relative '>
             <div className='flex flex-col overflow-auto h-[75vh]'>
                 <MessageBox/>
                 <MessageBox/>

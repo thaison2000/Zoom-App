@@ -1,17 +1,39 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Link, useNavigate } from 'react-router-dom'
+import { userLogin } from '../../redux/actions/userAction'
 
 const Login = () => {
 
-  const [email,setEmail] = useState('')
-  const [password,setPassword] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>)=>{
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value)
   }
 
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>)=>{
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value)
+  }
+
+  const { error, success } = useSelector(
+    (state: any) => state.user
+  )
+  const dispatch = useDispatch<any>()
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (success) {
+      navigate('/')
+    }
+  }, [success, error])
+
+  const handleLogin = () =>{
+    dispatch(userLogin({
+      email: email,
+      password: password,
+    }))
   }
 
   return (
@@ -23,10 +45,20 @@ const Login = () => {
           <div className='drop-shadow-xl rounded-2xl bg-white'>
             <h1 className='p-4 text-center text-2xl bg-gray-100 rounded-t-2xl font-semibold'>Zoom App</h1>
             <div className='px-auto'>
-              <input type="text" className='w-5/6 p-4 m-4 ml-8 rounded-full focus:outline-none' placeholder='email ...' onChange={handleEmailChange} value={email}/>
+              <input
+                type="text"
+                className='w-5/6 p-4 m-4 ml-8 rounded-full focus:outline-none'
+                placeholder='email ...'
+                onChange={handleEmailChange}
+                value={email} />
             </div>
             <div>
-              <input type="text" className='w-5/6 p-4 m-4 ml-8 rounded-full focus:outline-none' placeholder='password ...' onChange={handlePasswordChange} value={password}/>
+              <input
+                type="text"
+                className='w-5/6 p-4 m-4 ml-8 rounded-full focus:outline-none'
+                placeholder='password ...'
+                onChange={handlePasswordChange}
+                value={password} />
             </div>
             <div>
               <h3 className='text-center m-auto'>
@@ -35,7 +67,9 @@ const Login = () => {
               </h3>
             </div>
             <div>
-              <div className='m-auto w-24 h-12 bg-gray-100 text-center text-xl font-medium p-2 rounded-2xl my-4 hover:pointer-events-none'>Login</div>
+              <div
+                className='m-auto w-24 h-12 bg-gray-100 text-center text-xl font-medium p-2 rounded-2xl my-4'
+                onClick={handleLogin}>Login</div>
             </div>
           </div>
         </div>

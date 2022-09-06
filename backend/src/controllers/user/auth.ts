@@ -1,17 +1,14 @@
-import express from 'express'
-const authRoute = express.Router()
-
 import bcrypt from 'bcrypt'
 import nodemailer from 'nodemailer'
 import jwt from 'jsonwebtoken'
 import { v4 as uuid } from 'uuid';
-import UserModel from '../../models/UserSchema'
+import UserSchema from '../../models/UserSchema'
 import { registerValidation, loginValidation } from '../validation'
 import { Request, Response } from 'express'
 import { UserInterface } from '../../interface'
 
 //register
-authRoute.post('/register', async (req: Request, res: Response) => {
+export const registerController = async (req: Request, res: Response) => {
 
     try {
 
@@ -31,7 +28,7 @@ authRoute.post('/register', async (req: Request, res: Response) => {
         }
 
         // checking user exist or not
-        const emailExist = await UserModel.findOne({ email: req.body.email })
+        const emailExist = await UserSchema.findOne({ email: req.body.email })
         if (emailExist) {
             return res.status(400).json('Email already exist')
         }
@@ -48,7 +45,7 @@ authRoute.post('/register', async (req: Request, res: Response) => {
             password: hashedPassword,
             avatar: ''
         }
-        let newUser = await UserModel.create(user)
+        let newUser = await UserSchema.create(user)
         res.status(200).json({
             userId: newUser.userId,
             email: newUser.email,
@@ -59,10 +56,10 @@ authRoute.post('/register', async (req: Request, res: Response) => {
         console.log(err)
         res.status(500).json(err)
     }
-});
+};
 
 // LOGIN
-authRoute.post('/login', async (req: Request, res: Response) => {
+export const loginController = async (req: Request, res: Response) => {
     try {
 
         // validate data before logged in
@@ -72,7 +69,7 @@ authRoute.post('/login', async (req: Request, res: Response) => {
         }
 
         // checking email exist or not
-        const user = await UserModel.findOne({ email: req.body.email })
+        const user = await UserSchema.findOne({ email: req.body.email })
         if (!user) {
             return res.status(400).json('Email is not found!')
         }
@@ -85,7 +82,7 @@ authRoute.post('/login', async (req: Request, res: Response) => {
         }
 
         // Create and assign token
-        const token = jwt.sign({ user_id: user.userId }, `${process.env.TOKEN_SECRET}`)
+        const token = jwt.sign({ userId: user.userId }, `${process.env.TOKEN_SECRET}`)
 
         res.status(200).json({
             userId: user.userId,
@@ -98,10 +95,10 @@ authRoute.post('/login', async (req: Request, res: Response) => {
         res.status(500).json(err)
     }
 
-})
+}
 
 //send code for reset password
-authRoute.post('/sendToken', function (req, res) {
+export const sendTokenController = function (req: Request, res: Response) {
     try {
         var transporter = nodemailer.createTransport({ // config mail server
             service: 'Gmail',
@@ -138,10 +135,10 @@ authRoute.post('/sendToken', function (req, res) {
     catch (err) {
         res.status(500).json(err)
     }
-});
+};
 
 //check code for reset password
-authRoute.post('/checkToken', function (req, res) {
+export const checkTokenController = function (req: Request, res: Response) {
     try {
         const changePasswordToken: string = req.body.changePasswordToken
         const receiverEmail: string = req.body.receiverEmail
@@ -155,6 +152,4 @@ authRoute.post('/checkToken', function (req, res) {
     catch (err) {
         res.status(500).json(err)
     }
-});
-
-export default authRoute
+};
